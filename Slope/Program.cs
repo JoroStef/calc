@@ -1,6 +1,8 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using Slope.Helpers;
 using Slope.Models;
+using Slope.Report;
+using Slope.Report.Models;
 
 Console.WriteLine("Hello, World!");
 
@@ -75,3 +77,18 @@ foreach (var m in sortedOutputs)
         Console.WriteLine($"x0 = {o.SlipSurface.Centroid.X.ToString("F3")}\ty0 = {o.SlipSurface.Centroid.Y.ToString("F3")}\tFoS = {o.FOS.ToString("F3")}");
     }
 }
+
+//
+
+var critivalOutput = minValue!;
+var slipSurfaceDetails = critivalOutput.SlipSurface.GetDetails(slopeGeometry);
+
+var drawing = new SvgDrawing();
+
+drawing.Add(new SvgLine(new Point2D(0,0), slopeGeometry.pA));
+drawing.Add(new SvgLine(new Point2D(0, 0), new Point2D(0 - slopeGeometry.pA.X, 0)));
+drawing.Add(new SvgLine(slopeGeometry.pA, new Point2D(slipSurfaceDetails.Bx, slipSurfaceDetails.By)));
+
+File.WriteAllText(
+    "C:\\dev\\myGitHub\\calc\\drawing\\drawing.svg",
+    drawing.ToSvg());
