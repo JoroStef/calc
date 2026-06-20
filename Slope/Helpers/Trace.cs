@@ -1,19 +1,13 @@
 ﻿using Slope.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Slope.Helpers
 {
     public class Trace
     {
         public record MeshPoint(
-    double X,
-    double Y,
-    Output Value);
-
+            double X,
+            double Y,
+            Output Value);
 
         public static List<MeshPoint> Start(CalculationContext calculationContext)
         {

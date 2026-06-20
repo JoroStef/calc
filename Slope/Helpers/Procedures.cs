@@ -48,29 +48,30 @@ namespace Slope.Helpers
             double m_a = default;
             var slipSurfaceDetails = slipSurfase.GetDetails(slopeGeometry);
 
-            var distributedLoad = actions.FirstOrDefault();
-
-            if (distributedLoad == null)
+            foreach (var action in actions)
             {
-                return default;
+                if (action == null)
+                {
+                    return default;
+                }
+
+                var intensity = action.Intensity;
+                if (action.xStart <= slipSurfaceDetails.Bx)
+                {
+                    // out of slip surface
+                    return default;
+                }
+
+                double activeLength = action.xStart - slipSurfaceDetails.Bx;
+                if (action.Length > 0 && action.Length < activeLength)
+                {
+                    activeLength = action.Length;
+                }
+
+                double xR = action.xStart - 0.5 * activeLength;
+
+                m_a += intensity * activeLength * (slipSurfase.Centroid.X - xR);
             }
-
-            var intensity = distributedLoad.Intensity;
-            if (distributedLoad.xStart <= slipSurfaceDetails.Bx)
-            {
-                // out of slip surface
-                return default;
-            }
-
-            double activeLength = distributedLoad.xStart - slipSurfaceDetails.Bx;
-            if (distributedLoad.Length > 0 && distributedLoad.Length < activeLength)
-            {
-                activeLength = distributedLoad.Length;
-            }
-
-            double xR = distributedLoad.xStart - 0.5 * activeLength;
-
-            m_a += intensity * activeLength * (slipSurfase.Centroid.X - xR);
 
             return m_a;
         }
@@ -80,31 +81,32 @@ namespace Slope.Helpers
             double m_p = default;
             var slipSurfaceDetails = slipSurfase.GetDetails(slopeGeometry);
 
-            var distributedLoad = actions.FirstOrDefault();
-
-            if (distributedLoad == null)
+            foreach(var action in actions )
             {
-                return default;
+                if (action == null)
+                {
+                    continue;
+                }
+
+                var intensity = action.Intensity;
+                if (action.xStart <= slipSurfaceDetails.Bx)
+                {
+                    // out of slip surface
+                    return default;
+                }
+
+                double activeLength = action.xStart - slipSurfaceDetails.Bx;
+                if (action.Length > 0 && action.Length < activeLength)
+                {
+                    activeLength = action.Length;
+                }
+
+                double xR = action.xStart - 0.5 * activeLength;
+
+                double angleR = Math.Asin((slipSurfase.Centroid.X - xR) / slipSurfaceDetails.Radius);
+
+                m_p += intensity * activeLength * Math.Cos(angleR) * Math.Tan(DegreesToRadians(soil.FrictionAngle)) * slipSurfaceDetails.Radius;
             }
-
-            var intensity = distributedLoad.Intensity;
-            if (distributedLoad.xStart <= slipSurfaceDetails.Bx)
-            {
-                // out of slip surface
-                return default;
-            }
-
-            double activeLength = distributedLoad.xStart - slipSurfaceDetails.Bx;
-            if (distributedLoad.Length > 0 && distributedLoad.Length < activeLength)
-            {
-                activeLength = distributedLoad.Length;
-            }
-
-            double xR = distributedLoad.xStart - 0.5 * activeLength;
-
-            double angleR = Math.Asin((slipSurfase.Centroid.X - xR) / slipSurfaceDetails.Radius);
-
-            m_p += intensity * activeLength * Math.Cos(angleR) * Math.Tan(DegreesToRadians(soil.FrictionAngle)) * slipSurfaceDetails.Radius;
 
             return m_p;
         }

@@ -6,7 +6,7 @@ Console.WriteLine("Hello, World!");
 
 var slopeGeometry = new SlopeGeometry
     (
-        pA: new Point2D(-1.55, 3.10)
+        pA: new Point2D(-2.3, 4.6)
     );
 
 var slipSurface = new SlipSurface
@@ -25,9 +25,15 @@ var actions = new List<DistributedLoad>()
 {
     new DistributedLoad
         (
-            Intensity: 100.0,
-            xStart: -1.55 - 2.95,
-            Length: 3.55
+            Intensity: 30.0,
+            xStart: -2.3 - 0.5,
+            Length: 3.00
+        ),
+    new DistributedLoad
+        (
+            Intensity: 60.0,
+            xStart: -8.0,
+            Length: 10.00
         )
 };
 
@@ -42,7 +48,7 @@ var output = Procedures.CalculateFos(calcContext, slipSurface);
 
 var outputs = Trace.Start(calcContext);
 
-var filteredOutputs = outputs.Where(m => m.Value.FOS > 0 && m.Value.FOS < 1.5 && m.Value.FOS != double.NaN).ToList();
+var filteredOutputs = outputs.Where(m => m.Value.FOS > 0 && m.Value.FOS < 2 && m.Value.FOS != double.NaN).ToList();
 
 var minFosNode = filteredOutputs.First();
 for (int i = 0; i < filteredOutputs.Count; i++)
@@ -59,7 +65,9 @@ Console.WriteLine();
 
 //Console.WriteLine($"FoS = {output.FOS}");
 
-foreach (var m in filteredOutputs)
+var sortedOutputs = filteredOutputs.OrderBy(m => m.Value.FOS).Take(9);
+
+foreach (var m in sortedOutputs)
 {
     var o = m.Value;
     if (o.FOS > 0)
