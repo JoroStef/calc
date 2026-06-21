@@ -10,7 +10,10 @@
         double CentroidX,
         double CentroidY,
         double Bx,
-        double By);
+        double By,
+        // Towards positive X
+        double StartAngle,
+        double EndAngle);
 
     public class SlipSurface
     {
@@ -52,6 +55,8 @@
                     double.NaN,
                     double.NaN,
                     R,
+                    double.NaN,
+                    double.NaN,
                     double.NaN,
                     double.NaN,
                     double.NaN,
@@ -144,6 +149,12 @@
 
             double arcLength = R * phi;
 
+            double startAngle = Math.Atan2(0 - y0, 0 - x0);
+            startAngle = NormalizeAngle(startAngle);
+            
+            double endAngle = Math.Atan2(by - y0, bx - x0);
+            endAngle = NormalizeAngle(endAngle);
+
             _details = new CircularWedgeResult(
                 area,
                 arcLength,
@@ -151,9 +162,22 @@
                 xg,
                 yg,
                 bx,
-                by);
+                by,
+                startAngle,
+                endAngle);
 
             return _details;
+        }
+
+        public static double NormalizeAngle(double angle)
+        {
+            while (angle < 0)
+                angle += 2 * Math.PI;
+
+            while (angle >= 2 * Math.PI)
+                angle -= 2 * Math.PI;
+
+            return angle;
         }
     }
 }

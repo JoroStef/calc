@@ -45,6 +45,11 @@ namespace Slope.Helpers
 
         private static double ActiveMomentFromActions(List<DistributedLoad> actions, SlopeGeometry slopeGeometry, SlipSurface slipSurfase)
         {
+            if (actions == null)
+            {
+                return default;
+            }
+
             double m_a = default;
             var slipSurfaceDetails = slipSurfase.GetDetails(slopeGeometry);
 
@@ -78,6 +83,11 @@ namespace Slope.Helpers
 
         private static double PasiveMomentFromActions(List<DistributedLoad> actions, SlopeGeometry slopeGeometry, SlipSurface slipSurfase, SoilLayer soil)
         {
+            if (actions == null)
+            {
+                return default;
+            }
+
             double m_p = default;
             var slipSurfaceDetails = slipSurfase.GetDetails(slopeGeometry);
 

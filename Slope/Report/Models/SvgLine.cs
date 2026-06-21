@@ -33,7 +33,16 @@ namespace Slope.Report.Models
         public string ToSvg()
         {
             return
-                $"<line x1='{X1}' y1='{Y1}' x2='{X2}' y2='{Y2}' stroke='black'/>";
+                $"<line x1='{X1}' y1='{Y1}' x2='{X2}' y2='{Y2}' stroke='black' stroke-width='0.05'/>";
+        }
+
+        public SvgBounds GetBounds()
+        {
+            return new SvgBounds(
+                Math.Min(X1, X2),
+                Math.Min(Y1, Y2),
+                Math.Max(X1, X2),
+                Math.Max(Y1, Y2));
         }
     }
 }

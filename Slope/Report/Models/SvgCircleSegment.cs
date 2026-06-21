@@ -21,6 +21,11 @@ namespace Slope.Report.Models
         public double Yc { get; set; }
         public double R { get; set; }
 
+        public SvgBounds GetBounds()
+        {
+            throw new NotImplementedException();
+        }
+
         public string ToSvg()
         {
             return $"<circle cx='{Xc}' cy='{Yc}' r='{R}' fill='none' stroke='black'/>";
