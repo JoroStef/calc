@@ -8,36 +8,47 @@ Console.WriteLine("Hello, World!");
 
 var slopeGeometry = new SlopeGeometry
     (
-        pA: new Point2D(-2.3, 4.6)
+        pA: new Point2D(-1.55, 3.1)
     );
 
 var soil = new SoilLayer
     (
-        UnitWeight: 19, 
-        FrictionAngle: 17.7, 
+        UnitWeight: 19,
+        FrictionAngle: 17.8,
         Cochesion: 13.8
     );
 
 var actions = new List<DistributedLoad>()
 {
-    new DistributedLoad
-        (
-            Intensity: 7.5,
-            xStart: -2.3 -0,
-            Length: double.NaN
-        ),
+    //// q
     //new DistributedLoad
     //    (
-    //        Intensity: 15.0,
+    //        Intensity: 7.5,
+    //        xStart: -2.3,
+    //        Length: double.NaN
+    //    ),
+    //// H1
+    //new DistributedLoad
+    //    (
+    //        Intensity: 30.0,
     //        xStart: -2.3 - 0.5,
     //        Length: 3.00
     //    ),
+    //// H2
     //new DistributedLoad
     //    (
     //        Intensity: 60.0,
     //        xStart: -8.0,
     //        Length: 10.00
-    //    )
+    //    ),
+
+    // Crane
+    new DistributedLoad
+        (
+            Intensity: 100.0,
+            xStart: -4.5,
+            Length: 3.5
+        )
 };
 
 var calcContext = new CalculationContext
@@ -77,23 +88,38 @@ foreach (var m in sortedOutputs)
 
 //
 
-var critivalOutput = minValue!;
-var slipSurfaceDetails = critivalOutput.SlipSurface.GetDetails(slopeGeometry);
+var criticalOutput = minValue!;
 
-var drawing = new SvgDrawing();
+SvgDrawing drawing = GenerateDrawing(slopeGeometry, criticalOutput);
 
-drawing.Add(new SvgLine(new Point2D(0,0), slopeGeometry.pA));
-drawing.Add(new SvgLine(new Point2D(0, 0), new Point2D(0 - slopeGeometry.pA.X, 0)));
-drawing.Add(new SvgLine(slopeGeometry.pA, new Point2D(slipSurfaceDetails.Bx, slipSurfaceDetails.By)));
-drawing.Add(new SvgArc(critivalOutput.SlipSurface.Centroid, new Point2D(0, 0), new Point2D(slipSurfaceDetails.Bx, slipSurfaceDetails.By), slipSurfaceDetails.Radius));
+GenerateReport(drawing);
 
-string baseDir = AppDomain.CurrentDomain.BaseDirectory;
-string filePath = Path.Combine(baseDir, "Report", "Template", "slope-template.html");
+// ---
+// Helpers
+// ---
+static SvgDrawing GenerateDrawing(SlopeGeometry slopeGeometry, Output critivalOutput)
+{
+    var slipSurfaceDetails = critivalOutput.SlipSurface.GetDetails(slopeGeometry);
 
-string html = File.ReadAllText(filePath);
+    var drawing = new SvgDrawing();
 
-html = html.Replace("{{SCHEME}}", drawing.ToSvg());
+    drawing.Add(new SvgLine(new Point2D(0, 0), slopeGeometry.pA));
+    drawing.Add(new SvgLine(new Point2D(0, 0), new Point2D(0 - slopeGeometry.pA.X, 0)));
+    drawing.Add(new SvgLine(slopeGeometry.pA, new Point2D(slipSurfaceDetails.Bx, slipSurfaceDetails.By)));
+    drawing.Add(new SvgArc(critivalOutput.SlipSurface.Centroid, new Point2D(0, 0), new Point2D(slipSurfaceDetails.Bx, slipSurfaceDetails.By), slipSurfaceDetails.Radius));
+    return drawing;
+}
 
-File.WriteAllText(
-    "C:\\dev\\myGitHub\\calc\\drawing\\report.html",
-    html);
+static void GenerateReport(SvgDrawing drawing)
+{
+    string baseDir = AppDomain.CurrentDomain.BaseDirectory;
+    string filePath = Path.Combine(baseDir, "Report", "Template", "slope-template.html");
+
+    string html = File.ReadAllText(filePath);
+
+    html = html.Replace("{{SCHEME}}", drawing.ToSvg());
+
+    File.WriteAllText(
+        "C:\\dev\\myGitHub\\calc\\drawing\\report.html",
+        html);
+}
