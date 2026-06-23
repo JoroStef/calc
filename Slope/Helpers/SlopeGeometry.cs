@@ -11,4 +11,10 @@ namespace Slope.Helpers
         (
             Point2D pA
         );
+
+    public record PointsCoordinates
+    {
+        public List<Point2D> Points { get; set; }
+    }
+
 }

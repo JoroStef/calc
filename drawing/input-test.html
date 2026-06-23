@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>Calculation Input</h2>
+
+<br></br>
+
+<input type="file"
+       id="fileInput"
+       accept=".json"
+       onchange="loadInputFile(event)">
+
+<button onclick="openProject()">
+    Open Project
+</button>
+
+<h3>Points</h3>
+<table id="pointsTable">
+    <thead>
+        <tr>
+            <th>X</th>
+            <th>Y</th>
+            <th></th>
+        </tr>
+    </thead>
+
+    <tbody id="pointsBody">
+    </tbody>
+</table>
+
+<button onclick="addPoint()">
+    + Add Point
+</button>
+
+<br></br>
+
+<h3>Layers</h3>
+<table id="layersTable">
+    <thead>
+        <tr>
+            <th>id</th>
+			<th>h</th>
+			<th>gama</th>
+            <th>Fric. angle</th>
+            <th>Coch.</th>
+        </tr>
+    </thead>
+
+    <tbody id="layersBody">
+    </tbody>
+</table>
+
+<button onclick="addLayer()">
+    + Add Layer
+</button>
+
+<br></br>
+
+<h3>Loads</h3>
+<table id="loadsTable">
+    <thead>
+        <tr>
+            <th>id</th>
+			<th>Intensity</th>
+			<th>xStart</th>
+            <th>Length</th>
+        </tr>
+    </thead>
+
+    <tbody id="loadsBody">
+    </tbody>
+</table>
+
+<button onclick="addLoad()">
+    + Add Load
+</button>
+
+<br></br>
+<button onclick="saveInput()">
+    Save
+</button>
+
+<button onclick="saveProject()">
+    Save Project
+</button>
+
+<script>
+function addPoint(x = 0, y = 0)
+{
+    const row = document.createElement("tr");
+
+    row.innerHTML = `
+        <td><input class="x" type="number" value="${x}"></td>
+        <td><input class="y" type="number" value="${y}"></td>
+        <td><button onclick="this.closest('tr').remove()">X</button></td>
+    `;
+
+    document.getElementById("pointsBody").appendChild(row);
+}
+
+function addLayer(id = "", h = 0, gama = 0, fricAngle = 0, coh = 0)
+{
+    const row = document.createElement("tr");
+
+    row.innerHTML = `
+        <td><input class="id" type="text" value="${id}"></td>
+        <td><input class="h" type="number" value="${h}"></td>
+		<td><input class="gama" type="number" value="${gama}"></td>
+		<td><input class="fricAngle" type="number" value="${fricAngle}"></td>
+		<td><input class="coh" type="number" value="${coh}"></td>
+        <td><button onclick="this.closest('tr').remove()">X</button></td>
+    `;
+
+    document.getElementById("layersBody").appendChild(row);
+}
+
+function addLoad(id = "", Intensity = 0, xStart = 0, Length = 0)
+{
+    const row = document.createElement("tr");
+
+    row.innerHTML = `
+        <td><input class="l-id" type="text" value="${id}"></td>
+        <td><input class="l-intensity" type="number" value="${Intensity}"></td>
+		<td><input class="l-start" type="number" value="${xStart}"></td>
+		<td><input class="l-length" type="number" value="${Length}"></td>
+        <td><button onclick="this.closest('tr').remove()">X</button></td>
+    `;
+
+    document.getElementById("loadsBody").appendChild(row);
+}
+
+function getPoints()
+{
+    const rows =
+        document.querySelectorAll("#pointsBody tr");
+
+    const points = [];
+
+    rows.forEach(r =>
+    {
+        points.push({
+            x: Number(r.querySelector(".x").value),
+            y: Number(r.querySelector(".y").value)
+        });
+    });
+
+    return points;
+}
+
+function getLayers()
+{
+    const rows =
+        document.querySelectorAll("#layersBody tr");
+
+    const layers = [];
+
+    rows.forEach(r =>
+    {
+        layers.push({
+            Id: r.querySelector(".id").value,
+            Height: Number(r.querySelector(".h").value),
+			UnitWeight: Number(r.querySelector(".gama").value),
+			FrictionAngle: Number(r.querySelector(".fricAngle").value),
+			Cohesion: Number(r.querySelector(".coh").value)
+        });
+    });
+
+    return layers;
+}
+
+function getLoads()
+{
+    const rows =
+        document.querySelectorAll("#loadsBody tr");
+
+    const loads = [];
+
+    rows.forEach(r =>
+    {
+        loads.push({
+            Id: r.querySelector(".l-id").value,
+            Intensity: Number(r.querySelector(".l-intensity").value),
+			xStart: Number(r.querySelector(".l-start").value),
+			Length: Number(r.querySelector(".l-length").value)
+        });
+    });
+
+    return loads;
+}
+
+function saveInput()
+{
+    const input = {
+        points: getPoints(),
+		layers: getLayers(),
+		loads: getLoads()
+    };
+
+    const json = JSON.stringify(input, null, 2);
+
+    const blob = new Blob([json], {
+        type: "application/json"
+    });
+
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "input.json";
+    a.click();
+}
+
+function loadInputFile(event)
+{
+    const file = event.target.files[0];
+
+    if (!file)
+        return;
+
+    const reader = new FileReader();
+
+    reader.onload = function(e)
+    {
+        const json = e.target.result;
+
+        const input = JSON.parse(json);
+
+        populateForm(input);
+    };
+
+    reader.readAsText(file);
+}
+
+function clearTables()
+{
+    document.getElementById("pointsBody").innerHTML = "";
+    document.getElementById("layersBody").innerHTML = "";
+    document.getElementById("loadsBody").innerHTML = "";
+}
+
+function populateForm(input)
+{
+    clearTables();
+
+    if (input.points)
+    {
+        input.points.forEach(p =>
+            addPoint(p.x, p.y));
+    }
+
+    if (input.layers)
+    {
+        input.layers.forEach(l =>
+            addLayer(
+                l.id ?? l.Id ?? "",
+                l.height ?? l.Height ?? 0,
+                l.unitWeight ?? l.UnitWeight ?? 0,
+                l.frictionAngle ?? l.FrictionAngle ?? 0,
+                l.cohesion ?? l.Cohesion ?? 0));
+    }
+
+    if (input.loads)
+    {
+        input.loads.forEach(load =>
+            addLoad(
+                load.id ?? load.Id ?? "",
+                load.intensity ?? load.Intensity ?? 0,
+                load.xStart ?? load.XStart ?? 0,
+                load.length ?? load.Length ?? 0));
+    }
+}
+
+async function openProject()
+{
+    const [fileHandle] =
+        await window.showOpenFilePicker({
+            types: [{
+                description: "Project File",
+                accept: {
+                    "application/json": [".json"]
+                }
+            }]
+        });
+
+    currentFileHandle = fileHandle;
+
+    const file = await fileHandle.getFile();
+
+    const json = await file.text();
+
+    populateForm(JSON.parse(json));
+}
+
+async function saveProject()
+{
+    const input = {
+        points: getPoints(),
+        layers: getLayers(),
+        loads: getLoads()
+    };
+
+    const json =
+        JSON.stringify(input, null, 2);
+
+    if (!currentFileHandle)
+    {
+        alert("Open a project first.");
+        return;
+    }
+
+    const writable =
+        await currentFileHandle.createWritable();
+
+    await writable.write(json);
+
+    await writable.close();
+}
+</script>
+
+</body>
+</html>

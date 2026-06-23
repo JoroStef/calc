@@ -2,8 +2,9 @@
 {
     public record SoilLayer
         (
+            string Id,
             double UnitWeight,
             double FrictionAngle,
-            double Cochesion
+            double Cohesion
         );
 }

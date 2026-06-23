@@ -29,7 +29,7 @@ namespace Slope.Helpers
 
             // Passive moment
             double m_p = 
-                calculationContext.Soil.Cochesion * slipSurfaceDetails.ArcLength * slipSurfaceDetails.Radius +
+                calculationContext.Soil.Cohesion * slipSurfaceDetails.ArcLength * slipSurfaceDetails.Radius +
                 w * Math.Cos(angle1) * Math.Tan(DegreesToRadians(calculationContext.Soil.FrictionAngle)) * slipSurfaceDetails.Radius +
                 PasiveMomentFromActions(calculationContext.Actions, calculationContext.SlopeGeometry, slipSurfase, calculationContext.Soil);
 
