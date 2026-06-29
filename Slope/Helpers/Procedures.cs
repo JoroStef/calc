@@ -61,19 +61,19 @@ namespace Slope.Helpers
                 }
 
                 var intensity = action.Intensity;
-                if (action.xStart <= slipSurfaceDetails.Bx)
+                if (action.XStart <= slipSurfaceDetails.Bx)
                 {
                     // out of slip surface
                     return default;
                 }
 
-                double activeLength = action.xStart - slipSurfaceDetails.Bx;
+                double activeLength = action.XStart - slipSurfaceDetails.Bx;
                 if (action.Length > 0 && action.Length < activeLength)
                 {
                     activeLength = action.Length;
                 }
 
-                double xR = action.xStart - 0.5 * activeLength;
+                double xR = action.XStart - 0.5 * activeLength;
 
                 m_a += intensity * activeLength * (slipSurfase.Centroid.X - xR);
             }
@@ -99,19 +99,19 @@ namespace Slope.Helpers
                 }
 
                 var intensity = action.Intensity;
-                if (action.xStart <= slipSurfaceDetails.Bx)
+                if (action.XStart <= slipSurfaceDetails.Bx)
                 {
                     // out of slip surface
                     return default;
                 }
 
-                double activeLength = action.xStart - slipSurfaceDetails.Bx;
+                double activeLength = action.XStart - slipSurfaceDetails.Bx;
                 if (action.Length > 0 && action.Length < activeLength)
                 {
                     activeLength = action.Length;
                 }
 
-                double xR = action.xStart - 0.5 * activeLength;
+                double xR = action.XStart - 0.5 * activeLength;
 
                 double angleR = Math.Asin((slipSurfase.Centroid.X - xR) / slipSurfaceDetails.Radius);
 

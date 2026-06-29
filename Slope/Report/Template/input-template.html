@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+    <h2>Calculation Input</h2>
+
+    <br></br>
+
+    <input type="file"
+           id="fileInput"
+           accept=".json"
+           onchange="loadInputFile(event)">
+
+    <button onclick="openProject()">
+        Open Project
+    </button>
+
+    <h3>Points</h3>
+    <table id="pointsTable">
+        <thead>
+            <tr>
+                <th>X</th>
+                <th>Y</th>
+                <th></th>
+            </tr>
+        </thead>
+
+        <tbody id="pointsBody">
+        </tbody>
+    </table>
+
+    <button onclick="addRow('points')">+ Add Point</button>
+
+    <br></br>
+
+    <h3>Layers</h3>
+    <table id="layersTable">
+        <thead>
+            <tr>
+                <th>id</th>
+                <th>h</th>
+                <th>gama</th>
+                <th>Fric. angle</th>
+                <th>Coch.</th>
+            </tr>
+        </thead>
+
+        <tbody id="layersBody">
+        </tbody>
+    </table>
+
+    <button onclick="addRow('layers')">+ Add Layer</button>
+
+    <br></br>
+
+    <h3>Loads</h3>
+    <table id="loadsTable">
+        <thead>
+            <tr>
+                <th>id</th>
+                <th>Intensity</th>
+                <th>xStart</th>
+                <th>Length</th>
+            </tr>
+        </thead>
+
+        <tbody id="loadsBody">
+        </tbody>
+    </table>
+
+    <button onclick="addRow('loads')">+ Add Load</button>
+
+    <br></br>
+    <button onclick="saveInput()">
+        Save
+    </button>
+
+    <button onclick="saveProject()">
+        Save Project
+    </button>
+
+    <script>
+
+        const tables = {
+            points: {
+                body: "pointsBody",
+                columns: [
+                    { name: "x", type: "number" },
+                    { name: "y", type: "number" }
+                ]
+            },
+
+            layers: {
+                body: "layersBody",
+                columns: [
+                    { name: "Id", type: "text" },
+                    { name: "Height", type: "number" },
+                    { name: "UnitWeight", type: "number" },
+                    { name: "FrictionAngle", type: "number" },
+                    { name: "Cohesion", type: "number" }
+                ]
+            },
+
+            loads: {
+                body: "loadsBody",
+                columns: [
+                    { name: "Id", type: "text" },
+                    { name: "Intensity", type: "number" },
+                    { name: "XStart", type: "number" },
+                    { name: "Length", type: "number" }
+                ]
+            }
+        };
+
+        function addRow(tableName, values = {}) {
+            const table = tables[tableName];
+
+            const row = document.createElement("tr");
+
+            row.innerHTML =
+                table.columns.map(c => {
+                    const value = values[c.name] ?? "";
+
+                    return `<td>
+                            <input
+                                class="${c.name}"
+                                type="${c.type}"
+                                value="${value}">
+                        </td>`;
+                }).join("")
+                +
+                `<td>
+                        <button onclick="this.closest('tr').remove()">X</button>
+                    </td>`;
+
+            document.getElementById(table.body).appendChild(row);
+        }
+
+        function getRows(tableName) {
+            const table = tables[tableName];
+
+            return [...document.querySelectorAll(`#${table.body} tr`)]
+                .map(r => {
+                    const obj = {};
+
+                    table.columns.forEach(c => {
+                        const value =
+                            r.querySelector(`.${c.name}`).value;
+
+                        obj[c.name] =
+                            c.type === "number"
+                                ? Number(value)
+                                : value;
+                    });
+
+                    return obj;
+                });
+        }
+
+        function saveInput() {
+            const input = {
+                points: getRows("points"),
+                layers: getRows("layers"),
+                loads: getRows("loads")
+        };
+
+            const json = JSON.stringify(input, null, 2);
+
+            const blob = new Blob([json], {
+                type: "application/json"
+            });
+
+            const a = document.createElement("a");
+            a.href = URL.createObjectURL(blob);
+            a.download = "input.json";
+            a.click();
+        }
+
+        function loadInputFile(event) {
+            const file = event.target.files[0];
+
+            if (!file)
+                return;
+
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                const json = e.target.result;
+
+                const input = JSON.parse(json);
+
+                populateForm(input);
+            };
+
+            reader.readAsText(file);
+        }
+
+        function clearTables() {
+            document.getElementById("pointsBody").innerHTML = "";
+            document.getElementById("layersBody").innerHTML = "";
+            document.getElementById("loadsBody").innerHTML = "";
+        }
+
+        function populateForm(input) {
+            clearTables();
+
+            clearTables();
+
+            input.points?.forEach(p =>
+                addRow("points", p));
+
+            input.layers?.forEach(l =>
+                addRow("layers", l));
+
+            input.loads?.forEach(load =>
+                addRow("loads", load));
+        }
+
+        async function openProject() {
+            const [fileHandle] =
+                await window.showOpenFilePicker({
+                    types: [{
+                        description: "Project File",
+                        accept: {
+                            "application/json": [".json"]
+                        }
+                    }]
+                });
+
+            currentFileHandle = fileHandle;
+
+            const file = await fileHandle.getFile();
+
+            const json = await file.text();
+
+            populateForm(JSON.parse(json));
+        }
+
+        async function saveProject() {
+            const input = {
+                points: getPoints(),
+                layers: getLayers(),
+                loads: getLoads()
+            };
+
+            const json =
+                JSON.stringify(input, null, 2);
+
+            if (!currentFileHandle) {
+                alert("Open a project first.");
+                return;
+            }
+
+            const writable =
+                await currentFileHandle.createWritable();
+
+            await writable.write(json);
+
+            await writable.close();
+        }
+    </script>
+
+</body>
+</html>

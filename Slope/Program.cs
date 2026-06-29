@@ -6,6 +6,17 @@ using Slope.Report.Models;
 using System.Text.Json;
 
 
+var metadata = MetadataGenerator.Generate<CalculationInput>();
+
+File.WriteAllText(
+    "metadata.json",
+    JsonSerializer.Serialize(
+        metadata,
+        new JsonSerializerOptions
+        {
+            WriteIndented = true
+        }));
+
 var app = new MyClass();
 app.Run();
 
@@ -51,7 +62,7 @@ class MyClass
         // 1. Read input
         var json = File.ReadAllText(inputFile);
 
-        var input = JsonSerializer.Deserialize<Input>(
+        var input = JsonSerializer.Deserialize<CalculationInput>(
             json,
             new JsonSerializerOptions
             {
