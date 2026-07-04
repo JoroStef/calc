@@ -11,8 +11,8 @@ namespace Slope.Helpers
             if (!slipSurfase.IsValid(calculationContext.SlopeGeometry))
             {
                 return new Output(
-                        FOS: double.NaN,
-                        SlipSurface: slipSurfase
+                        fos: double.NaN,
+                        slipSurface: slipSurfase
                     );
             }
 

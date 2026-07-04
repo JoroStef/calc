@@ -10,12 +10,12 @@ namespace Slope.Models
     public record CalculationInput
     {
         [InputCollection("Slope geometry", 0)]
-        public List<Point2D> Points { get; set; }
+        public List<Point2D> Geometry { get; set; } = new List<Point2D>();
 
         [InputCollection("Layers", 1)]
-        public List<SoilLayer> Layers { get; set; }
+        public List<SoilLayer> Layers { get; set; } = new List<SoilLayer>();
 
         [InputCollection("Loads", 2)]
-        public List<DistributedLoad> Loads { get; set; }
+        public List<DistributedLoad> Loads { get; set; } = new List<DistributedLoad>();
     }
 }
