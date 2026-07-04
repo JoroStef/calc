@@ -17,7 +17,12 @@ namespace Slope.Helpers
 
             var result = TraceSpiralMesh(pStart.X, pStart.Y, 1.0, f: (x, y) =>
             {
-                var slipSurface = new SlipSurface { Centroid = new Point2D(x, y) };
+                var centr = new Point2D
+                {
+                    X = x,
+                    Y = y
+                };
+                var slipSurface = new SlipSurface { Centroid = centr };
                 return Procedures.CalculateFos(calculationContext, slipSurface);
             });
 

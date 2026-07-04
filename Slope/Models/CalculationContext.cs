@@ -6,6 +6,6 @@ namespace Slope.Models
     {
         public SlopeGeometry SlopeGeometry { get; set; }
         public SoilLayer Soil { get; set; }
-        public List<DistributedLoad> Actions { get; set; }
+        public List<SurfaceLoad> Actions { get; set; }
     }
 }

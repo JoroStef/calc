@@ -1,9 +1,4 @@
 ﻿using Slope.Attributes;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Slope.Models
 {
@@ -16,6 +11,6 @@ namespace Slope.Models
         public List<SoilLayer> Layers { get; set; } = new List<SoilLayer>();
 
         [InputCollection("Loads", 2)]
-        public List<DistributedLoad> Loads { get; set; } = new List<DistributedLoad>();
+        public List<SurfaceLoad> Loads { get; set; } = new List<SurfaceLoad>();
     }
 }

@@ -1,4 +1,6 @@
-﻿public class MenuCommand
+﻿using Slope.Services;
+
+public class MenuCommand
 {
     protected MenuCommand(string title)
     {
@@ -13,7 +15,9 @@
 
     public virtual void Execute(MenuContext context) 
     {
-        Console.WriteLine($"Execuiting '{Title}' ...");
-        Console.ReadLine();
+        if (context == null)
+        {
+            return;
+        }
     }
 }

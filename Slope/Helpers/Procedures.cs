@@ -43,7 +43,7 @@ namespace Slope.Helpers
             return degrees * (Math.PI / 180.0);
         }
 
-        private static double ActiveMomentFromActions(List<DistributedLoad> actions, SlopeGeometry slopeGeometry, SlipSurface slipSurfase)
+        private static double ActiveMomentFromActions(List<SurfaceLoad> actions, SlopeGeometry slopeGeometry, SlipSurface slipSurfase)
         {
             if (actions == null)
             {
@@ -81,7 +81,7 @@ namespace Slope.Helpers
             return m_a;
         }
 
-        private static double PasiveMomentFromActions(List<DistributedLoad> actions, SlopeGeometry slopeGeometry, SlipSurface slipSurfase, SoilLayer soil)
+        private static double PasiveMomentFromActions(List<SurfaceLoad> actions, SlopeGeometry slopeGeometry, SlipSurface slipSurfase, SoilLayer soil)
         {
             if (actions == null)
             {

@@ -3,7 +3,7 @@ using System.Reflection;
 
 namespace Slope.Attributes;
 
-public class ObjectEditor<T> where T : class, new()
+public class ObjectEditor<T> where T : new()
 {
     public T Create()
     {
@@ -23,6 +23,11 @@ public class ObjectEditor<T> where T : class, new()
 
     public void Edit(T obj)
     {
+        if (obj == null)
+        {
+            return;
+        }
+
         foreach (var property in typeof(T).GetProperties())
         {
             var editor = InputFieldFactory.Get(property.PropertyType);

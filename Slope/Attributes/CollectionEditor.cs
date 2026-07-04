@@ -3,7 +3,7 @@ using System.Reflection;
 
 namespace Slope.Attributes;
 
-public sealed class CollectionEditor<T> where T : class, new()
+public sealed class CollectionEditor<T> where T : new()
 {
     private readonly ObjectEditor<T> _objectEditor;
     List<(PropertyInfo Property, ColumnAttribute Column)> _columns;
@@ -12,11 +12,10 @@ public sealed class CollectionEditor<T> where T : class, new()
     {
         _objectEditor = objectEditor;
 
-        _columns = typeof(T).GetProperties()
-    .Select(p => (Property: p, Column: p.GetCustomAttribute<ColumnAttribute>()))
-.Where(x => x.Column != null)
-.OrderBy(x => x.Column!.Order)
-.ToList();
+        _columns = typeof(T).GetProperties().Select(p => (Property: p, Column: p.GetCustomAttribute<ColumnAttribute>()))
+            .Where(x => x.Column != null)
+            .OrderBy(x => x.Column!.Order)
+            .ToList();
 
     }
 

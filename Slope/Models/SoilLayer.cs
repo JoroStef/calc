@@ -4,7 +4,7 @@ using System.Reflection;
 
 namespace Slope.Models
 {
-    public record SoilLayer : Slope.Models.IFormattable
+    public record SoilLayer
     {
         [InputField("Id", 0)]
         [Prompt("Id")]
@@ -30,15 +30,5 @@ namespace Slope.Models
         [Prompt("Cohesion (kPa)")]
         [Column(5, "c")]
         public double Cohesion { get; init; }
-
-        public string Format()
-        {
-            return
-                $"{this.Id,-10}" +
-                $"{this.Height,8:F2}" +
-                $"{this.UnitWeight,8:F2}" +
-                $"{this.FrictionAngle,8:F1}" +
-                $"{this.Cohesion,8:F1}";
-        }
     }
 }

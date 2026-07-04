@@ -1,4 +1,6 @@
-﻿namespace Slope.Models.ConsoleUI
+﻿using Slope.Services;
+
+namespace Slope.Models.ConsoleUI
 {
     public class CalculateCommand : MenuCommand
     {

@@ -1,6 +1,5 @@
 ﻿using Slope.Attributes;
-using Slope.Models.UiEditors;
-using System.Reflection;
+using Slope.Services;
 
 namespace Slope.Models.ConsoleUI;
 
@@ -13,9 +12,11 @@ public class EditLayersCommand : MenuCommand
     {
         base.Execute(context);
 
-        var layer = new SoilLayer();
-
         var collectionEditor = new CollectionEditor<SoilLayer>(new ObjectEditor<SoilLayer>());
-        collectionEditor.Edit(context.Input.Layers);
+
+        collectionEditor.Edit(context.Input!.Layers);
+
+        var projectService = ServiceFactory.Get<IProjectService>();
+        projectService.SaveInput(context);
     }
 }

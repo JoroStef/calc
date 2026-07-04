@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Slope.Models.UiEditors;
+﻿namespace Slope.Models.UiEditors;
 
 public sealed class DoubleField : IInputField
 {
