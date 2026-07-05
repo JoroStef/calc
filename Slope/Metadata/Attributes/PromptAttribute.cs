@@ -1,4 +1,4 @@
-﻿namespace Slope.Attributes;
+﻿namespace Slope.Metadata.Attributes;
 
 public sealed class PromptAttribute : Attribute
 {

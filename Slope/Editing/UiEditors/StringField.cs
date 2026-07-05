@@ -1,4 +1,4 @@
-﻿namespace Slope.Models.UiEditors;
+﻿namespace Slope.Editors.UiEditors;
 
 public sealed class StringField : IInputField
 {

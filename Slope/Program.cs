@@ -1,17 +1,8 @@
 ﻿// See https://aka.ms/new-console-template for more information
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
 using Slope.Engnes;
 using Slope.EngnesAndGenerators;
-using Slope.Helpers;
-using Slope.Models;
-using Slope.Report;
-using Slope.Report.Models;
 using Slope.Services;
 using Slope.UI;
-using System.Diagnostics;
-using System.Text.Json;
 
 
 
@@ -22,7 +13,6 @@ var menu = new ConsoleMenu(projectService, engine, reportGenerator);
 
 menu.Run();
 
-var metadata = MetadataGenerator.Generate<CalculationInput>();
 
 //var metadataString = JsonSerializer.Serialize(
 //    metadata,

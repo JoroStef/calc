@@ -1,4 +1,5 @@
-﻿using Slope.Attributes;
+﻿using Slope.Editors.UiEditors;
+using Slope.Services;
 
 namespace Slope.Models.ConsoleUI
 {
@@ -11,23 +12,21 @@ namespace Slope.Models.ConsoleUI
         {
             base.Execute(context);
 
-            var objectEditor = new ObjectEditor<Project>();
+            var inputFueld = InputFieldFactory.Get(typeof(string));
 
-            var projectObj = objectEditor.Create();
-
-            var projectFolder = Path.Combine(projectObj.ParentFolder, projectObj.Name);
+            var projectFolder = inputFueld.Read("Project folder", null) as string;
 
             if (!Directory.Exists(projectFolder))
             {
-                Directory.CreateDirectory(projectFolder);
+                Console.WriteLine("Directory doesn't exist.");
+                return;
             }
 
-            // Work with default folder for all projects - shall be well known
-            // Create a new subfolder in it. Handle name duplications (conflicts with existing).
-            // Create new input object and parse it 
+            var projectService = ServiceFactory.Get<IProjectService>();
+            CalculationInput input = projectService.LoadInput(projectFolder);
 
             context.ProjectFolder = projectFolder;
-            context.Input = new CalculationInput();
+            context.Input = input;
         }
     }
 }

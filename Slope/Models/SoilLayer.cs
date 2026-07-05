@@ -1,34 +1,22 @@
-﻿using Slope.Attributes;
-using Slope.Models.UiEditors;
-using System.Reflection;
+﻿using Slope.Metadata.Attributes;
 
 namespace Slope.Models
 {
     public record SoilLayer
     {
-        [InputField("Id", 0)]
-        [Prompt("Id")]
-        [Column(1, "Id")]
+        [TableField(1, "Id")]
         public string Id { get; init; } = "";
 
-        [InputField("Height", 1)]
-        [Prompt("Height (m)")]
-        [Column(2, "H")]
+        [TableField(2, "H")]
         public double Height { get; init; }
 
-        [InputField("γ", 2)]
-        [Prompt("Unit weight (kN/m3)")]
-        [Column(3, "gama")]
+        [TableField(3, "gama")]
         public double UnitWeight { get; init; }
 
-        [InputField("φ", 3)]
-        [Prompt("Friction angle (drgr.)")]
-        [Column(4, "fi")]
+        [TableField(4, "fi")]
         public double FrictionAngle { get; init; }
 
-        [InputField("c", 4)]
-        [Prompt("Cohesion (kPa)")]
-        [Column(5, "c")]
+        [TableField(5, "c")]
         public double Cohesion { get; init; }
     }
 }

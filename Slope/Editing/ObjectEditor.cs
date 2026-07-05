@@ -1,7 +1,8 @@
-﻿using Slope.Models.UiEditors;
+﻿using Slope.Editors.UiEditors;
+using Slope.Metadata.Attributes;
 using System.Reflection;
 
-namespace Slope.Attributes;
+namespace Slope.Editors;
 
 public class ObjectEditor<T> where T : new()
 {
@@ -12,7 +13,10 @@ public class ObjectEditor<T> where T : new()
         {
             var editor = InputFieldFactory.Get(property.PropertyType);
 
-            var caption = property.GetCustomAttribute<PromptAttribute>()?.Text ?? property.Name;
+            var caption = 
+                property.GetCustomAttribute<PromptAttribute>()?.Text ??
+                property.GetCustomAttribute<TableFieldAttribute>()?.Caption ?? 
+                property.Name;
 
             var value = editor.Read(caption, null);
             property.SetValue(obj, value, null);
@@ -32,7 +36,11 @@ public class ObjectEditor<T> where T : new()
         {
             var editor = InputFieldFactory.Get(property.PropertyType);
 
-            var caption = property.GetCustomAttribute<PromptAttribute>()?.Text ?? property.Name;
+            var caption =
+                property.GetCustomAttribute<PromptAttribute>()?.Text ??
+                property.GetCustomAttribute<TableFieldAttribute>()?.Caption ??
+                property.Name;
+
             var currentValue = property.GetValue(obj);
 
             var value = editor.Read(caption, currentValue);

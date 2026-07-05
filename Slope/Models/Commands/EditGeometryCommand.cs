@@ -1,4 +1,4 @@
-﻿using Slope.Attributes;
+﻿using Slope.Editors;
 using Slope.Services;
 
 namespace Slope.Models.ConsoleUI;

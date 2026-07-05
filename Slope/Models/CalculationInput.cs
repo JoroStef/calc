@@ -1,4 +1,4 @@
-﻿using Slope.Attributes;
+﻿using Slope.Metadata.Attributes;
 
 namespace Slope.Models
 {

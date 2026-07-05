@@ -1,18 +1,20 @@
-﻿using System;
+﻿using Slope.Metadata.Attributes;
+using Slope.Rendering;
+using System;
 using System.Reflection;
 
-namespace Slope.Attributes;
+namespace Slope.Editors;
 
 public sealed class CollectionEditor<T> where T : new()
 {
     private readonly ObjectEditor<T> _objectEditor;
-    List<(PropertyInfo Property, ColumnAttribute Column)> _columns;
+    List<(PropertyInfo Property, TableFieldAttribute Column)> _columns;
 
     public CollectionEditor(ObjectEditor<T> objectEditor)
     {
         _objectEditor = objectEditor;
 
-        _columns = typeof(T).GetProperties().Select(p => (Property: p, Column: p.GetCustomAttribute<ColumnAttribute>()))
+        _columns = typeof(T).GetProperties().Select(p => (Property: p, Column: p.GetCustomAttribute<TableFieldAttribute>()))
             .Where(x => x.Column != null)
             .OrderBy(x => x.Column!.Order)
             .ToList();
@@ -23,7 +25,9 @@ public sealed class CollectionEditor<T> where T : new()
     {
         while (true)
         {
-            Draw(items);
+            Console.Clear();
+            new ConsoleTableRenderer<T>().Render(items);
+            //Draw(items);
 
             Console.WriteLine();
             Console.Write("[A]dd  [E]dit  [D]elete  [B]ack > ");
@@ -100,66 +104,66 @@ public sealed class CollectionEditor<T> where T : new()
         }
     }
 
-    private void Draw(IList<T> items)
-    {
-        Console.Clear();
+    //private void Draw(IList<T> items)
+    //{
+    //    Console.Clear();
 
-        PrintHeader();
+    //    PrintHeader();
         
-        Console.WriteLine(new string('-', 60));
+    //    Console.WriteLine(new string('-', 60));
 
-        if (items.Count == 0)
-        {
-            Console.WriteLine("<empty>");
-            return;
-        }
+    //    if (items.Count == 0)
+    //    {
+    //        Console.WriteLine("<empty>");
+    //        return;
+    //    }
 
-        PrintRows(items);
-    }
+    //    PrintRows(items);
+    //}
 
-    private void PrintHeader()
-    {
-        Console.Write("#".PadRight(3));
+    //private void PrintHeader()
+    //{
+    //    Console.Write("#".PadRight(3));
 
-        foreach (var c in _columns)
-        {
-            Console.Write(c.Column!.Title.PadRight(c.Column.Width));
-        }
+    //    foreach (var c in _columns)
+    //    {
+    //        Console.Write(c.Column!.Caption.PadRight(c.Column.Width));
+    //    }
 
-        Console.WriteLine();
-    }
+    //    Console.WriteLine();
+    //}
 
-    private void PrintRows(IList<T> items)
-    {
-        for (int row = 0; row < items.Count; row++)
-        {
-            Console.Write($"{row + 1}".PadRight(3));
+    //private void PrintRows(IList<T> items)
+    //{
+    //    for (int row = 0; row < items.Count; row++)
+    //    {
+    //        Console.Write($"{row + 1}".PadRight(3));
 
-            foreach (var c in _columns)
-            {
-                var value = c.Property.GetValue(items[row]);
+    //        foreach (var c in _columns)
+    //        {
+    //            var value = c.Property.GetValue(items[row]);
 
-                string text = Format(value, c.Column!);
+    //            string text = Format(value, c.Column!);
 
-                Console.Write(text.PadRight(c.Column.Width));
-            }
+    //            Console.Write(text.PadRight(c.Column.Width));
+    //        }
 
-            Console.WriteLine();
-        }
+    //        Console.WriteLine();
+    //    }
 
-    }
+    //}
 
-    private static string Format(object? value, ColumnAttribute column)
-    {
-        if (value == null)
-            return "";
+    //private static string Format(object? value, FieldAttribute column)
+    //{
+    //    if (value == null)
+    //        return "";
 
-        if (value is IFormattable formattable &&
-            !string.IsNullOrEmpty(column.Format))
-        {
-            return formattable.ToString(column.Format, null);
-        }
+    //    if (value is IFormattable formattable &&
+    //        !string.IsNullOrEmpty(column.Format))
+    //    {
+    //        return formattable.ToString(column.Format, null);
+    //    }
 
-        return value.ToString() ?? "";
-    }
+    //    return value.ToString() ?? "";
+    //}
 }
